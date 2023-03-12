@@ -1,0 +1,116 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+ 
+namespace _12_алгоритм_Крускала
+{
+    class Program
+    {
+ 
+        const int n = 5;
+        static int[,] graf = new int[n, n]
+        {
+            { 0, 1, 0, 0, 3 },
+            { 1, 0, 2, 4, 7 },
+            { 0, 2, 0, 3, 0 },
+            { 0, 4, 3, 0, 0 },
+            { 3, 7, 0, 0, 0 }
+        };
+        struct edge
+        {
+            int v1, v2; // направление (вершины)
+            int w; // вес ребра
+            public edge(int v1, int v2, int w)
+            {
+                this.v1 = v1;
+                this.v2 = v2;
+                this.w = w;
+            }
+            public int V1{ get { return v1; } }
+            public int V2 { get { return v2; } }
+            public int W { get { return w; } }
+        }
+ 
+        static edge[] edges=new edge[] {
+            new edge(0,1,1),
+            new edge(0,4,3),
+            new edge(1,0,1),
+            new edge(1,4,7),
+            new edge(1,2,2),
+            new edge(1,3,4),
+            new edge(2,1,2),
+            new edge(2,3,3),
+            new edge(3,2,3),
+            new edge(3,1,4),
+            new edge(4,0,3),
+            new edge(4,1,7),
+        }; // массив ребер графа
+ 
+        const int NV = n; // Количество вершин в графе
+        static int NE = edges.Length; // Количество ребер в графе
+ 
+        static int[] nodes = new int[NV];
+        static int last_v;
+ 
+        // Функция получает цвет вершины n-й по порядку.
+        // если nodes[v] < 0, то вершина last_v имеет цвет nodes[v]
+        // если nodes[v] >= 0, то вершина v имеет цвет такой же, 
+        // как и вершина с номером nodes[last_v]
+        static int getColor(int v)
+        {
+            int c;
+            if (nodes[v] < 0)
+                return nodes[last_v = v];
+            c = getColor(nodes[v]);
+            nodes[v] = last_v;
+            return c;
+        }
+ 
+        static void bubleSort()
+        {
+            edge temp;
+            for (int i = 0; i < edges.Length; i++)
+            {
+                for (int j = 1; j < edges.Length; j++)
+                {
+                    if (edges[j].W <= edges[j - 1].W)
+                    {
+                        temp = edges[j - 1];
+                        edges[j - 1] = edges[j];
+                        edges[j] = temp;
+                    }
+                }
+            }
+        }
+ 
+        static void Kruskala()
+        {
+ 
+            bubleSort();
+ 
+            for(int i = 0; i < NV; i++) nodes[i] = -1 - i;
+ 
+            last_v = nodes[0];
+ 
+            Console.WriteLine("Edge :  Weight");
+            for (int i = 1; i < NE; i++)
+            { // пока не прошли все ребра
+                int c2 = getColor(edges[i].V2);
+                if (getColor(edges[i].V1) != c2)
+                {
+                    // Если ребро соединяет вершины различных
+                    //цветов - мы его добавляем и перекрашиваем вершины
+                       nodes[last_v] = edges[i].V2;
+                    Console.WriteLine("{0} - {1} : {2}", edges[i].V1, edges[i].V2, edges[i].W);
+                }
+            }
+        }
+        static void Main(string[] args)
+        {
+            Kruskala();
+            Console.Read();
+        }
+    }
+}

@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+ 
+namespace _10_алгоритм_поиска_максимального_паросочет_Куна_
+{
+    class Program
+    {
+        //подается двудольный неориентированнный граф
+        //внешний список это вершины первой доли
+        static List<List<int>> g = new List<List<int>>()
+        {
+            new List<int>{ }, // k=
+            new List<int>{0, 2, 4},//k=3
+            new List<int>{}, // k=
+            new List<int>{0,2,5}, //k=3
+            new List<int>{}, // k=
+            new List<int>{ },//
+            new List<int>{2}//k=1
+        };
+        static int n=7;//количество списков
+        static int k=7;//общее количество элементов подсписков (количество ребер)
+        static int[] mt=new int[n]; //информация о текущем паросочетании 
+        static bool[] used = new bool[n]; // вспомогательный массив для поиска пути dfs-ом
+ 
+        static bool try_kuhn(int v)
+        {
+            if (used[v]) return false;
+            used[v] = true;
+            for (int i = 0; i < g[v].Count; ++i)
+            {
+                int to = g[v][i];
+                if (mt[to] == -1 || try_kuhn(mt[to]))
+                {
+                    mt[to] = v;
+                    return true;
+                }
+            }
+            return false;
+        }
+        static void memset(int[] a, int size, int t)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                a[i]=t;
+            }
+        }
+        static void memset(bool[] a,int size, bool t)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                a[i]=t;
+            }
+        }
+        static void Main(string[] args)
+        {
+                memset(mt, k, -1);
+                for (int v = 0; v < n; ++v)
+                {
+                    memset(used, n, false);
+                    try_kuhn(v);
+                }
+                for (int i = 0; i < k; ++i)
+                    if (mt[i] != -1)
+                        Console.WriteLine("{0}  {1}", mt[i] + 1, i + 1);
+            Console.Read();
+        }
+    }
+}

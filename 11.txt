@@ -1,0 +1,64 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+ 
+namespace _11_алгоритм_Прима
+{
+    class Program
+    {
+        const int n = 5;
+        static int[,] graf = new int[n, n]
+        {
+            { 0, 1, 0, 0, 3 },
+            { 1, 0, 2, 4, 7 },
+            { 0, 2, 0, 3, 0 },
+            { 0, 4, 3, 0, 0 },
+            { 3, 7, 0, 0, 0 }
+        };
+        static bool[] selected = new bool[n];
+ 
+        static void Prima()
+        {
+            selected[0] = true;
+            int no_edge = 0;
+            int x;
+            int y;
+            Console.WriteLine("Edge :  Weight");
+            while (no_edge < n - 1)
+            {
+                int min = int.MaxValue;
+                x = 0;
+                y = 0;
+                for (int i = 0; i < n; i++)
+                {
+                    if (selected[i])
+                    {
+                        for (int j = 0; j < n; j++)
+                        {
+                            if (!selected[j] && graf[i,j]!=0)
+                            {
+                                if (min > graf[i,j])
+                                {
+                                    min = graf[i,j];
+                                    x = i;
+                                    y = j;
+                                }
+                            }
+                        }
+                    }
+                }
+                Console.WriteLine( "{0} - {1} : {2}",x+1, y + 1, graf[x,y]);
+                selected[y] = true;
+                no_edge++;
+            }
+        }
+ 
+        static void Main(string[] args)
+        {
+            Prima();
+            Console.Read();
+        }
+    }
+}
